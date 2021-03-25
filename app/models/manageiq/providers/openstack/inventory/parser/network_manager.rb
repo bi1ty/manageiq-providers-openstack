@@ -9,6 +9,7 @@ class ManageIQ::Providers::Openstack::Inventory::Parser::NetworkManager < Manage
     network_routers
     security_groups
     firewall_rules
+    load_balancer
   end
 
   def cloud_networks
@@ -34,6 +35,12 @@ class ManageIQ::Providers::Openstack::Inventory::Parser::NetworkManager < Manage
       network.orchestration_stack = persister.orchestration_stacks_resources.lazy_find(
         collector.orchestration_stack_by_resource_id(n["id"]).try(:physical_resource_id), :key => :stack
       )
+    end
+  end
+
+  def load_balancer
+    collect.load_balancer.each do |n|
+      puts(n)
     end
   end
 

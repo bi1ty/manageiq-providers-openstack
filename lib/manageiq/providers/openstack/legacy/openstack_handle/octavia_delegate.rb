@@ -1,9 +1,9 @@
 module OpenstackHandle
-  class NetworkDelegate < DelegateClass(Fog::OpenStack::Network)
+  class OctaviaDelegate < DelegateClass(Fog::OpenStack::Octavia)
     include OpenstackHandle::HandledList
     include Vmdb::Logging
 
-    SERVICE_NAME = "Network"
+    SERVICE_NAME = "Octavia"
 
     attr_reader :name
 

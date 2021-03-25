@@ -19,6 +19,8 @@ module ManageIQ::Providers::Openstack::Inventory::Persister::Definitions::Networ
     add_network_routers
 
     add_security_groups
+
+    add_load_balancer
   end
 
   # ------ IC provider specific definitions -------------------------
@@ -97,6 +99,12 @@ module ManageIQ::Providers::Openstack::Inventory::Persister::Definitions::Networ
       if references(:security_groups).present?
         builder.add_properties(:targeted => false)
       end
+    end
+  end
+
+  def add_load_balancer
+    add_collection(network, :load_balancer) do |builder|
+      puts(builder)
     end
   end
 end

@@ -15,3 +15,7 @@
 /config/settings/*.local.yml
 /config/environments/*.local.yml
 /spec/manageiq
+
+plugins/
+.generators
+.idea/

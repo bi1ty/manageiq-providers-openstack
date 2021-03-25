@@ -82,6 +82,14 @@ class ManageIQ::Providers::Openstack::Inventory::Collector::TargetCollection < M
     @security_groups = network_service.handled_list(:security_groups, {}, openstack_network_admin?)
   end
 
+  def load_balancer
+    return [] unless octavia_service
+    return [] if references(:load_balancer).blank?
+    return @load_balancer if @load_balancer.any?
+    @load_balancer = network_service.handled_list(:load-balancer, {}, openstack_network_admin?)
+    puts(@load_balancer)
+  end
+
   def firewall_rules
     return [] unless network_service
     return [] if references(:firewall_rules).blank?

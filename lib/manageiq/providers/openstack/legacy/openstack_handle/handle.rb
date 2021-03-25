@@ -10,6 +10,7 @@ module OpenstackHandle
     SERVICE_NAME_MAP = {
       "Compute"       => :nova,
       "Network"       => :neutron,
+      "Octavia"       => :load-balancer,
       "NFV"           => :nfv,
       "Image"         => :glance,
       "Volume"        => :cinder,
@@ -243,6 +244,10 @@ module OpenstackHandle
 
     def detect_network_service(tenant_name = nil)
       detect_service("Network", tenant_name)
+    end
+
+    def detect_octavia_service(tenant_name = nil)
+      detect_service("load-balancer", tenant_name)
     end
 
     def nfv_service(tenant_name = nil)

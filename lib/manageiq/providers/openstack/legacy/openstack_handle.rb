@@ -18,3 +18,4 @@ require 'manageiq/providers/openstack/legacy/openstack_handle/orchestration_dele
 require 'manageiq/providers/openstack/legacy/openstack_handle/storage_delegate'
 require 'manageiq/providers/openstack/legacy/openstack_handle/volume_delegate'
 require 'manageiq/providers/openstack/legacy/openstack_handle/workflow_delegate'
+require 'manageiq/providers/openstack/legacy/openstack_handle/octavia_delegate'

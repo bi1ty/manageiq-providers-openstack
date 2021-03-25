@@ -1,5 +1,5 @@
 module OpenstackHandle
-  class ImageDelegate < DelegateClass(Fog::Image::OpenStack)
+  class ImageDelegate < DelegateClass(Fog::OpenStack::Image)
     include OpenstackHandle::HandledList
     include Vmdb::Logging
 

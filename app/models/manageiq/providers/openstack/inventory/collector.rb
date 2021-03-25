@@ -23,6 +23,7 @@ class ManageIQ::Providers::Openstack::Inventory::Collector < ManageIQ::Providers
   attr_reader :network_ports
   attr_reader :network_routers
   attr_reader :security_groups
+  attr_reader :load_balancer
   attr_reader :volume_templates
   attr_reader :volume_snapshot_templates
   attr_reader :cloud_volumes
@@ -63,6 +64,7 @@ class ManageIQ::Providers::Openstack::Inventory::Collector < ManageIQ::Providers
     @network_routers            = []
     @security_groups            = []
     @firewall_rules             = []
+    @load_balancer              = []
     # cinder
     @cloud_volumes              = []
     @cloud_volume_snapshots     = []
@@ -93,6 +95,10 @@ class ManageIQ::Providers::Openstack::Inventory::Collector < ManageIQ::Providers
 
   def network_service
     @network_service ||= manager.openstack_handle.detect_network_service
+  end
+
+  def octavia_service
+    @octavia_service ||= manager.openstack_handle.detect_octavia_service
   end
 
   def nfv_service

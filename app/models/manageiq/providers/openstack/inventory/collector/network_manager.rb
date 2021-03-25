@@ -31,6 +31,11 @@ class ManageIQ::Providers::Openstack::Inventory::Collector::NetworkManager < Man
     @security_groups = network_service.handled_list(:security_groups, {}, openstack_network_admin?)
   end
 
+  def load_balancer
+    return @load_balancer if @load_balancer.any?
+    @load_balancer = network_service.handled_list(:load-balancer, {}, openstack_network_admin?)
+  end
+
   def security_groups_by_name
     @security_groups_by_name ||= Hash[security_groups.collect { |sg| [sg.name, sg.id] }]
   end

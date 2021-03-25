@@ -1,5 +1,5 @@
 module OpenstackHandle
-  class IdentityDelegate < DelegateClass(Fog::Identity::OpenStack)
+  class IdentityDelegate < DelegateClass(Fog::OpenStack::Identity)
     include OpenstackHandle::HandledList
     include Vmdb::Logging
 
