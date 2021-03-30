@@ -8,6 +8,7 @@ class ManageIQ::Providers::Openstack::NetworkManager < ManageIQ::Providers::Netw
   require_nested :NetworkRouter
   require_nested :Refresher
   require_nested :SecurityGroup
+  require_nested :Octavia
 
   include ManageIQ::Providers::Openstack::ManagerMixin
   include SupportsFeatureMixin
@@ -191,6 +192,90 @@ class ManageIQ::Providers::Openstack::NetworkManager < ManageIQ::Providers::Netw
       :role        => 'ems_operations',
       :zone        => my_zone,
       :args        => [options]
+    }
+    MiqTask.generic_action_with_callback(task_opts, queue_opts)
+  end
+
+  def create_load_balancer(vip_subnet_id, options)
+    Octavia.raw_create_load_balancer(self, vip_subnet_id, options)
+  end
+
+  def create_load_balancer_queue(userid, vip_subnet_id, options = {})
+    task_opts = {
+        :action => "creating Load Balancer for user #{userid}",
+        :userid => userid
+    }
+    queue_opts = {
+        :class_name  => self.class.name,
+        :method_name => 'create_load_balancer',
+        :instance_id => id,
+        :priority    => MiqQueue::HIGH_PRIORITY,
+        :role        => 'ems_operations',
+        :zone        => my_zone,
+        :args        => [vip_subnet_id, options]
+    }
+    MiqTask.generic_action_with_callback(task_opts, queue_opts)
+  end
+
+  def create_lb_listeners(loadbalancer_id, protocol, protocol_port, options)
+    Octavia.raw_create_lb_listeners(self, loadbalancer_id, protocol, protocol_port, options)
+  end
+
+  def create_lb_listeners_queue(userid, loadbalancer_id, protocol, protocol_port, options = {})
+    task_opts = {
+        :action => "creating Load Balancer Listeners for user #{userid}",
+        :userid => userid
+    }
+    queue_opts = {
+        :class_name  => self.class.name,
+        :method_name => 'create_lb_listeners',
+        :instance_id => id,
+        :priority    => MiqQueue::HIGH_PRIORITY,
+        :role        => 'ems_operations',
+        :zone        => my_zone,
+        :args        => [loadbalancer_id, protocol, protocol_port, options]
+    }
+    MiqTask.generic_action_with_callback(task_opts, queue_opts)
+  end
+
+  def create_lb_pools(listener_id, protocol, lb_algorithm, options)
+    Octavia.raw_create_lb_pools(self, listener_id, protocol, lb_algorithm, options)
+  end
+
+  def create_lb_pools_queue(userid, listener_id, protocol, lb_algorithm, options = {})
+    task_opts = {
+        :action => "creating Load Balancer Pools for user #{userid}",
+        :userid => userid
+    }
+    queue_opts = {
+        :class_name  => self.class.name,
+        :method_name => 'create_lb_pools',
+        :instance_id => id,
+        :priority    => MiqQueue::HIGH_PRIORITY,
+        :role        => 'ems_operations',
+        :zone        => my_zone,
+        :args        => [listener_id, protocol, lb_algorithm, options]
+    }
+    MiqTask.generic_action_with_callback(task_opts, queue_opts)
+  end
+
+  def create_lb_pool_members(pool_id, address, protocol_port, options)
+    Octavia.raw_create_lb_pool_members(self, pool_id, address, protocol_port, options)
+  end
+
+  def create_lb_pool_member_queue(userid, pool_id, address, protocol_port, options = {})
+    task_opts = {
+        :action => "creating Load Balancer Pool Members for user #{userid}",
+        :userid => userid
+    }
+    queue_opts = {
+        :class_name  => self.class.name,
+        :method_name => 'create_lb_pool_members',
+        :instance_id => id,
+        :priority    => MiqQueue::HIGH_PRIORITY,
+        :role        => 'ems_operations',
+        :zone        => my_zone,
+        :args        => [pool_id, address, protocol_port, options]
     }
     MiqTask.generic_action_with_callback(task_opts, queue_opts)
   end

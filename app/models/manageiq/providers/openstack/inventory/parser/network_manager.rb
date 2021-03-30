@@ -9,7 +9,10 @@ class ManageIQ::Providers::Openstack::Inventory::Parser::NetworkManager < Manage
     network_routers
     security_groups
     firewall_rules
-    load_balancer
+    load_balancers
+    load_balancer_pools
+    load_balancer_listeners
+    load_balancer_health_checks
   end
 
   def cloud_networks
@@ -38,10 +41,90 @@ class ManageIQ::Providers::Openstack::Inventory::Parser::NetworkManager < Manage
     end
   end
 
-  def load_balancer
-    collect.load_balancer.each do |n|
-      puts(n)
+  def load_balancers
+    collector.load_balancers.each do |n|
+      load_balancer = persister.load_balancers.find_or_build(n.id)
+      load_balancer.name = n["name"]
+      load_balancer.description = n["description"]
+      load_balancer.cloud_tenant_id = n["project_id"]
+      load_balancer.type = "ManageIQ::Providers::Openstack::NetworkManager::Octavia"
+      # load_balancer_pools
+      # load_balancer_listeners
+      # load_balancer_health_checks
     end
+  end
+
+  def load_balancer_pools
+    collector.load_balancer_pools.each do |n|
+      load_balancer_pools = persister.load_balancer_pools.find_or_build(n.id)
+      load_balancer_pools.name = ""
+      load_balancer_pools.description = ""
+      load_balancer_pools.load_balancer_algorithm = ""
+      load_balancer_pools.type = ""
+      load_balancer_pools.protocol = ""
+      load_balancer_pools.cloud_tenant_id = ""
+
+      lb_pool_member_pools(load_balancer_pools)
+    end
+  end
+
+  def load_balancer_pool_members(pools)
+    collector.load_balancer_pool_members.each do |n|
+      lb_pool_member_pools = persister.load_balancer_pool_members.find_or_build(n.id)
+      lb_pool_member_pools.load_balancer_pool_id = ""
+      lb_pool_member_pools.load_balancer_pool_member_id = ""
+    end
+  end
+
+  def load_balancer_listeners
+    collector.load_balancer_listeners.each do |n|
+      load_balancer_listeners = persister.load_balancer_listeners.find_or_build(n.id)
+      load_balancer_listeners.name = ""
+      load_balancer_listeners.description = ""
+      load_balancer_listeners.cloud_tenant_id = ""
+      load_balancer_listeners.load_balancer_protocol = ""
+      load_balancer_listeners.instance_protocol = ""
+      load_balancer_listeners.load_balancer_id = ""
+      load_balancer_listeners.load_balancer_port_range = ""
+      load_balancer_listeners.instance_port_range = ""
+      load_balancer_listeners.type = ""
+
+      load_balancer_listener_pools(load_balancer_listeners)
+    end
+  end
+
+  def load_balancer_listener_pools(listeners)
+    load_balancer_listener_pools = persister.load_balancer_listener_pools.find_or_build(n.id)
+    load_balancer_listener_pools.load_balancer_listener_id = ""
+    load_balancer_listener_pools.load_balancer_pool_id = ""
+  end
+
+  def load_balancer_health_checks
+    collector.lb_health_monitors.each do |n|
+      load_balancer_health_checks = persister.load_balancer_health_checks.find_or_build(n.id)
+      load_balancer_health_checks.name = ""
+      load_balancer_health_checks.protocol = ""
+      load_balancer_health_checks.port = ""
+      load_balancer_health_checks.url_path = ""
+      load_balancer_health_checks.interval = ""
+      load_balancer_health_checks.timeout = ""
+      load_balancer_health_checks.healthy_threshold = ""
+      load_balancer_health_checks.unhealthy_threshold = ""
+      load_balancer_health_checks.load_balancer_listener_id = ""
+      load_balancer_health_checks.cloud_tenant_id = ""
+      load_balancer_health_checks.load_balancer_id = ""
+      load_balancer_health_checks.type = ""
+
+      lb_health_check_members(load_balancer_health_checks)
+    end
+  end
+
+  def lb_health_check_members(health_check)
+    lb_health_check_members = persister.load_balancer_health_check_members.find_or_build(n.id)
+    lb_health_check_members.load_balancer_health_check_id = ""
+    lb_health_check_members.load_balancer_pool_member_id = ""
+    lb_health_check_members.status = ""
+    lb_health_check_members.status_reason = ""
   end
 
   def cloud_subnets

@@ -86,7 +86,7 @@ class ManageIQ::Providers::Openstack::Inventory::Collector::TargetCollection < M
     return [] unless octavia_service
     return [] if references(:load_balancer).blank?
     return @load_balancer if @load_balancer.any?
-    @load_balancer = network_service.handled_list(:load-balancer, {}, openstack_network_admin?)
+    @load_balancer = network_service.handled_list(:load_balancer, {}, openstack_network_admin?)
     puts(@load_balancer)
   end
 

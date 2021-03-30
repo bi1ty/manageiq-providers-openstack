@@ -23,7 +23,13 @@ class ManageIQ::Providers::Openstack::Inventory::Collector < ManageIQ::Providers
   attr_reader :network_ports
   attr_reader :network_routers
   attr_reader :security_groups
-  attr_reader :load_balancer
+  attr_reader :load_balancers
+  attr_reader :load_balancer_listeners
+  attr_reader :load_balancer_pools
+  attr_reader :load_balancer_pool_members
+  # attr_reader :load_balancer_l7policies
+  # attr_reader :load_balancer_l7rules
+  attr_reader :lb_health_monitors
   attr_reader :volume_templates
   attr_reader :volume_snapshot_templates
   attr_reader :cloud_volumes
@@ -64,7 +70,14 @@ class ManageIQ::Providers::Openstack::Inventory::Collector < ManageIQ::Providers
     @network_routers            = []
     @security_groups            = []
     @firewall_rules             = []
-    @load_balancer              = []
+    # load_balancers
+    @load_balancers             = []
+    @load_balancer_pools        = []
+    @load_balancer_pool_members = []
+    # @load_balancer_l7policies   = []
+    # @load_balancer_l7rules      = []
+    @lb_health_monitors         = []
+    @load_balancer_listeners    = []
     # cinder
     @cloud_volumes              = []
     @cloud_volume_snapshots     = []

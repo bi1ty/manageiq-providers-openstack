@@ -31,9 +31,46 @@ class ManageIQ::Providers::Openstack::Inventory::Collector::NetworkManager < Man
     @security_groups = network_service.handled_list(:security_groups, {}, openstack_network_admin?)
   end
 
-  def load_balancer
-    return @load_balancer if @load_balancer.any?
-    @load_balancer = network_service.handled_list(:load-balancer, {}, openstack_network_admin?)
+  def load_balancers
+    return [] unless octavia_service
+    return @load_balancers if @load_balancers.any?
+    @load_balancers = octavia_service.handled_list(:load_balancers, {}, openstack_network_admin?)
+  end
+
+  def load_balancer_listeners
+    return [] unless octavia_service
+    return @load_balancer_listeners if @load_balancer_listeners.any?
+    @load_balancer_listeners = octavia_service.handled_list(:load_balancers, {}, openstack_network_admin?)
+  end
+
+  def load_balancer_pools
+    return [] unless octavia_service
+    return @load_balancer_pools if @load_balancer_pools.any?
+    @load_balancer_pools = octavia_service.handled_list(:load_balancer_pools, {}, openstack_network_admin?)
+  end
+
+  def load_balancer_pool_members
+    return [] unless octavia_service
+    return @load_balancer_pool_members if @load_balancer_pool_members.any?
+    @load_balancer_pool_members = octavia_service.handled_list(:load_balancer_pool_members, {}, openstack_network_admin?)
+  end
+
+  # def load_balancer_l7policies
+  #   return [] unless octavia_service
+  #   return @load_balancer_l7policies if @load_balancer_l7policies.any?
+  #   @load_balancer_l7policies = octavia_service.handled_list(:load_balancer_l7policies, {}, openstack_network_admin?)
+  # end
+  #
+  # def load_balancer_l7rules
+  #   return [] unless octavia_service
+  #   return @load_balancer_l7rules if @load_balancer_l7rules.any?
+  #   @load_balancer_l7rules = octavia_service.handled_list(:load_balancer_l7rules, {}, openstack_network_admin?)
+  # end
+
+  def lb_health_monitors
+    return [] unless octavia_service
+    return @lb_health_monitors if @lb_health_monitors.any?
+    @lb_health_monitors = octavia_service.handled_list(:lb_health_monitors, {}, openstack_network_admin?)
   end
 
   def security_groups_by_name

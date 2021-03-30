@@ -10,7 +10,7 @@ module OpenstackHandle
     SERVICE_NAME_MAP = {
       "Compute"       => :nova,
       "Network"       => :neutron,
-      "Octavia"       => :load-balancer,
+      "Octavia"       => :load_balancers,
       "NFV"           => :nfv,
       "Image"         => :glance,
       "Volume"        => :cinder,
@@ -68,26 +68,16 @@ module OpenstackHandle
         raise MiqException::MiqOpenstackApiRequestError, _("Numeric-only passwords are not accepted")
       end
 
-      if service == "Planning"
-        # Special behaviour for Planning service Tuskar, since it is OpenStack specific service, there is no
-        # Fog::Planning module, only Fog::OpenStack::Planning
-        Fog::Openstack.const_get(service).new(opts)
-      elsif service == "Workflow"
-        Fog::Workflow::OpenStack.new(opts)
-      elsif service == "Metric"
-        Fog::Metric::OpenStack.new(opts)
-      elsif service == "Event"
-        Fog::Event::OpenStack.new(opts)
-      else
-        Fog.const_get(service).new(opts)
-      end
+      # Re-structed fog-openstack gem fow all services
+      Fog::OpenStack.const_get(service).new(opts)
+
     rescue Fog::OpenStack::Auth::Catalog::ServiceTypeError
       $fog_log.warn("MIQ(#{self.class.name}##{__method__}) "\
                     "Service #{service} not available for openstack provider #{auth_url}")
       raise MiqException::ServiceNotAvailable
     end
 
-    def self.auth_url(address, port = 5000, scheme = "http", path = '')
+    def self.auth_url(address, port = 5000, scheme = "http", path = '/identity/v3/')
       URI::Generic.build(:scheme => scheme, :host => address, :port => port.to_i, :path => path).to_s
     end
 
@@ -247,7 +237,7 @@ module OpenstackHandle
     end
 
     def detect_octavia_service(tenant_name = nil)
-      detect_service("load-balancer", tenant_name)
+      detect_service("Octavia", tenant_name)
     end
 
     def nfv_service(tenant_name = nil)
@@ -383,7 +373,7 @@ module OpenstackHandle
 
     def accessor_for_accessible_tenants(service, accessor, unique_id, array_accessor = true)
       results = []
-      not_found_error = Fog.const_get(service)::OpenStack::NotFound
+      not_found_error = Fog::OpenStack.const_get(service)::NotFound
       Parallel.each(service_for_each_accessible_tenant(service), :in_threads => thread_limit) do |svc, project|
 
         response = begin

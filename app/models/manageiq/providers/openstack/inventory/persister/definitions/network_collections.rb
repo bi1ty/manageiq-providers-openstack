@@ -103,8 +103,8 @@ module ManageIQ::Providers::Openstack::Inventory::Persister::Definitions::Networ
   end
 
   def add_load_balancer
-    add_collection(network, :load_balancer) do |builder|
-      puts(builder)
+    add_collection(network, :load_balancers) do |builder|
+      builder.add_properties(:model_class => ManageIQ::Providers::Openstack::NetworkManager::Octavia)
     end
   end
 end
